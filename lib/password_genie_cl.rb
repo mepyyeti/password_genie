@@ -10,6 +10,9 @@ class WordBank
 		if words == ""
 			raise "can't be empty."
 		end
+		unless words.is_a?(String)
+			raise "entry must be letters"
+		end
 		word_bank= words.split("").to_a
 		word_bank.delete(" ")
 		unless word_bank.is_a?(Array)
@@ -18,14 +21,14 @@ class WordBank
 		@word_bank= word_bank
 	end
 	
-	def number=(number)
-		unless number.is_a?(Fixnum)
+	def number= (number)
+		unless number.is_a?(Integer)
 			raise "whole numbers only, please"
 		end
 		if number<=0
 			raise ">= 0 only, please"
 		end
-		@number=number
+		@number= number
 	end
 	
 	def special_chars=(special_chars)
@@ -33,38 +36,34 @@ class WordBank
 	end
 
 	def initialize(words,number=8)
-		self.word_bank = words
-		self.number = number
-		self.special_chars = special_chars.to_a
+		self.word_bank= words
+		self.number= number
+		self.special_chars= special_chars.to_a
 		@password_ary = []
 		@numbers= (0..9).to_a
 	end
 	
 	def add_special_chars
-		word_bank.concat(@special_chars)
+		@word_bank.concat(@special_chars)
 		@word_bank
 	end
 	
 	def add_numbers
-		word_bank.concat(@numbers)
+		@word_bank.concat(@numbers)
 		@word_bank
 	end
 	
 	def create
-		puts "wordbank: #{@word_bank}, special #{@special_chars}"
-		i = number
-		puts "create"
+		i = @number
 		until i == 0
-			puts " i is #{i}"
-			if i == 2 && (@password_ary.include?(@special_chars) == false && @word_bank.include?(@special_chars))
-					@password_ary << @special_chars[rand(0..@special_chars.size)]
-					puts "1 == 2"
+			if i == 2 && (@word_bank.include?(@special_chars) == true && @password_ary.include?(@special_chars) == false)
+					@password_ary << @special_chars[rand(0..@special_chars.size - 1)]
 			end
-			if i == 1 && (@password_ary.include?(@numbers) == false && @word_bank.include?(@numbers))
-					@password_ary << @numbers[rand(0..@numbers.size)]
-					puts "i == 1"
+			if i == 1 && (@word_bank.include?(@numbers) == true && @password_ary.include?(@numbers) == false)
+					@password_ary << @numbers[rand(0..@numbers.size - 1)]
 			end
-			letter = rand(0..word_bank.size)
+			letter = rand(0..word_bank.size - 1)
+			#puts "#{i}, #{word_bank[letter]}"
 			@password_ary << word_bank[letter]
 			word_bank.delete_at(letter)
 			i -= 1
@@ -99,18 +98,12 @@ class WordBank
 			db = SQLite3::Database.open('genie.db')
 			puts db.get_first_value "select SQLite_VERSION()"
 			return "please create a directory first" unless File.exist?('genie.db')
-			puts "hello, again."
-			puts info
-			print_out = db.execute2 "SELECT * FROM site_info WHERE Site= :info_in OR Username = :info", info
-			puts "foo"
+			print_out = db.execute2 "SELECT * FROM site_info WHERE Site= :info OR Username = :info", info
 			return "no match" unless print_out != nil
-			puts "bar"
 			print_out.each do |line|
 				puts "[%5s] %8s | %s" % [line[1], line[2], line[3]]
 			end
-			puts "boo"
 		rescue SQLite3::Exception => e
-			puts "foo2"
 			puts e
 		ensure
 			db.close if db

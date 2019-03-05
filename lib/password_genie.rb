@@ -16,9 +16,9 @@ while go
 		puts "How long do you want your password to be?"
 		
 		number = gets.chomp.to_i
-		
 		unless number.is_a?(Integer)
-			puts "number MUST be an integer."
+			puts "#{number} is not an Integer."
+			puts "Please make a NUMERIC selection from above."
 			next
 		end
 		
@@ -31,6 +31,9 @@ while go
 		
 		puts "please compile your word bank:"
 		words = gets.chomp
+		if words == '' || words == ' '
+			next
+		end
 		
 		x = WordBank.new(words, number)
 		
