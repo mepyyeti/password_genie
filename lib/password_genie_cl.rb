@@ -56,14 +56,13 @@ class WordBank
 	def create
 		i = @number
 		until i == 0
-			if i == 2 && (@word_bank.include?(@special_chars) == true && @password_ary.include?(@special_chars) == false)
+			if i == 2 && (!(@word_bank & @special_chars).empty? && (@password_ary & @special_chars).empty?)
 					@password_ary << @special_chars[rand(0..@special_chars.size - 1)]
 			end
-			if i == 1 && (@word_bank.include?(@numbers) == true && @password_ary.include?(@numbers) == false)
+			if i == 1 && (!(@word_bank & @numbers).empty? && (@password_ary & @numbers).empty?)
 					@password_ary << @numbers[rand(0..@numbers.size - 1)]
 			end
 			letter = rand(0..word_bank.size - 1)
-			#puts "#{i}, #{word_bank[letter]}"
 			@password_ary << word_bank[letter]
 			word_bank.delete_at(letter)
 			i -= 1
@@ -103,6 +102,7 @@ class WordBank
 			print_out.each do |line|
 				puts "[%5s] %8s | %s" % [line[1], line[2], line[3]]
 			end
+			puts
 		rescue SQLite3::Exception => e
 			puts e
 		ensure
@@ -110,15 +110,24 @@ class WordBank
 		end
 	end
 	
-	def add_or_replace_info(site, username, password)
+	def add_or_replace_info(site, username, password, choice)
 		begin
 			db = SQLite3::Database.open('genie.db')
 			return "please set up database by restarting and choosing [1]" unless File.file?('genie.db')
 			puts db.get_first_value "select SQLite_VERSION()"
 			db.transaction
-			db.execute2 "UPDATE site_info SET Password = :password WHERE Site = :site AND Username = :username", password, site, username 
+			if choice == 3
+				db.execute2 "INSERT into site_info(Site, Password, Username) values(:site, :password, :username)" , site, password, username
+			else
+				db.execute2 "UPDATE site_info SET Password = :password WHERE Site = :site AND Username = :username" , password, site, username 
+			end
 			db.commit
-			puts "you made #{db.changes} changes."
+			if db.changes != 1
+				alter = "changes"
+			else
+				alter = "change"
+			end
+			puts "you made #{db.changes} #{alter}."
 		rescue SQLite3::Exception => e
 			puts e
 			db.rollback
