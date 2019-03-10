@@ -6,9 +6,9 @@ require 'sqlite3'
 class WordBank
 	attr_reader :word_bank, :number, :special_chars
 	
-	def word_bank=(words)
+	def word_bank= (words)
 		if words == ""
-			raise "can't be empty."
+			puts "you have elected to design a numeric PIN."
 		end
 		unless words.is_a?(String)
 			raise "entry must be letters"
@@ -34,13 +34,22 @@ class WordBank
 	def special_chars=(special_chars)
 		@special_chars=[".",",","$"]
 	end
-
-	def initialize(words,number=8)
+		
+	def initialize(words, number=8)
 		self.word_bank= words
 		self.number= number
-		self.special_chars= special_chars.to_a
+		self.special_chars= special_chars
 		@password_ary = []
 		@numbers= (0..9).to_a
+	end
+	
+	def add_caps
+		@caps_bank = []
+		@word_bank.each do |letter|
+			@caps_bank << letter.upcase
+		end
+		@word_bank.concat(@caps_bank)
+		@caps_bank
 	end
 	
 	def add_special_chars
@@ -56,18 +65,25 @@ class WordBank
 	def create
 		i = @number
 		until i == 0
-			if i == 2 && (!(@word_bank & @special_chars).empty? && (@password_ary & @special_chars).empty?)
+			if !@words.nil?
+				if i == 3 && (!(@word_bank & @caps_bank).empty? && (@password_ary & @caps_bank).empty?)
+					@password_ary << @caps_bank[rand(0..@caps_bank.size - 1)]
+				end
+				if i == 2 && (!(@word_bank & @special_chars).empty? && (@password_ary & @special_chars).empty?)
 					@password_ary << @special_chars[rand(0..@special_chars.size - 1)]
-			end
-			if i == 1 && (!(@word_bank & @numbers).empty? && (@password_ary & @numbers).empty?)
+				end
+				if i == 1 && (!(@word_bank & @numbers).empty? && (@password_ary & @numbers).empty?)
 					@password_ary << @numbers[rand(0..@numbers.size - 1)]
+				end			
+			else
+				letter = rand(0..word_bank.size - 1)
+				@password_ary << word_bank[letter]
+				@word_bank.delete_at(letter)		
+				@password = @password_ary.join()
+	
 			end
-			letter = rand(0..word_bank.size - 1)
-			@password_ary << word_bank[letter]
-			word_bank.delete_at(letter)
 			i -= 1
-		end
-		@password = @password_ary.join()
+		end				
 		puts @password
 		@password
 	end
@@ -117,6 +133,7 @@ class WordBank
 			puts db.get_first_value "select SQLite_VERSION()"
 			db.transaction
 			if choice == 3
+				db.execute2 "CREATE table if not exists site_info(Id INTEGER PRIMARY KEY, Site TEXT, Username TEXT, Password TEXT)" 
 				db.execute2 "INSERT into site_info(Site, Password, Username) values(:site, :password, :username)" , site, password, username
 			else
 				db.execute2 "UPDATE site_info SET Password = :password WHERE Site = :site AND Username = :username" , password, site, username 

@@ -16,36 +16,43 @@ while go
 		puts "you will now design a custom password!"
 		print "How long do you want your password to be?: "
 		
-		number = gets.chomp.to_i
-		unless number.is_a?(Integer)
-			puts "#{number} is not an Integer."
-			puts "Please make a NUMERIC selection from above."
-			next
+		number = gets.chomp
+
+		unless number = Integer(number) rescue next
 		end
 		
 		if number == 1
 			word_number = "character"
+		elsif number == 0
+			next
 		else
 			word_number = "characters"
 		end
 		puts "your word bank will contain #{number} #{word_number}."
 		
-		print "please compile your word bank: "
+		print "please compile your word bank ([Enter] for PIN): "
 		words = gets.chomp
 		if words == '' || words == ' '
-			next
+			puts "you have elected to create a custom numeric pin"
 		end
 		
-		x = WordBank.new(words, number)
-		
-		print 'do you wish to include special characters such as "." "," and "$"? [y/n]: '
-		special_char = gets.chomp
-		x.add_special_chars unless special_char == "n" 
-		print "do you wish to include numbers? [y/n]: "
-		num_chc = gets.chomp
-		x.add_numbers unless num_chc == 'n' 
+		x = WordBank.new(words,number)
+		unless words == '' || words == ' '
+			print 'do you wish to include any capitalized letters from your word bank? [y/n]: '
+			cap_char = gets.chomp
+			x.add_caps unless cap_char == "n"
+			print 'do you wish to include special characters such as "." "," and "$"? [y/n]: '
+			special_char = gets.chomp
+			x.add_special_chars unless special_char == "n" 
+			print "do you wish to include numbers? [y/n]: "
+			num_chc = gets.chomp
+			x.add_numbers unless num_chc == 'n' 
+		end
+		if words == '' || words == ' '
+			x.add_numbers
+		end
 		x.create
-		
+			
 		puts "done.\n\n"
 		print "\tto save, please enter 'save': "
 		choice = gets.chomp.downcase
@@ -70,7 +77,9 @@ while go
 		x.find_info(word)
 		next
 	elsif choice == 3 || choice == 4
-		puts "**MUST supply an EXISTING site and username**"
+		if choice == 4
+			puts "**MUST supply an EXISTING site and username**"
+		end
 		print "enter site: "
 		site = gets.chomp
 		print "enter username: "
@@ -79,10 +88,10 @@ while go
 			puts "BOTH site and username must be filled in. Back to the beginning."
 			next
 		end
-		if choice == 3
-			print "enter password: "
-		else
+		if choice == 4
 			print "enter new password: "
+		else
+			print "enter password: "
 		end
 		password = gets.chomp
 		if password != ''
