@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 #password_genie.rb
 
-require "password_genie_cl"
-require "password_genie/version"
+require "./password_genie_cl"
+require "./password_genie/version"
 
 module PasswordGenie
   class Error < StandardError; end
@@ -14,14 +14,16 @@ module PasswordGenie
 		puts "enter [3] to ADD a password\nenter [4] to CHANGE an existing password"
 		puts "enter [5] to EXIT"
 		
-		choice = gets.chomp
-		
-		while choice.empty? || !choice.is_a?(Integer)
+		choice = gets.chomp.to_i
+		choices = (1..5).to_a
+		choice_foo=[choice]
+
+		while !(choice_foo & choices)
 			print "please select a number choice from the options above: "
-			choice = gets.chomp
+			choice = gets.chomp.to_i
 		end
 		
-		choice=Integer(choice)
+		
 		
 		if choice == 1
 			puts "you will now design a custom password!"
