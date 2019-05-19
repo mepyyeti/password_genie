@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["mepyyeti"]
   spec.email         = ["rcabej@gmail.com"]
   
-  spec.summary       = %q{minor bug fixes and bundle migration.}
-  spec.description   = %q{a simple tool to build a password/pin number sqlite repository based on user defined parameters 2. archive passwords/pin numbers, usernames, and corresponding site data 3. and search data. requires sqlite3. minor big fixes and bundle migration.}
+  spec.summary       = %q{minor bug fixes and bundle migration. Can be run as executable.}
+  spec.description   = %q{a simple tool to build a password/pin number sqlite repository based on user defined parameters 2. archive passwords/pin numbers, usernames, and corresponding site data 3. and search data. requires sqlite3. minor big fixes and bundle migration. AS EXECUTABLE}
   spec.homepage      = "https://www.github.com/mepyyeti/password_genie"
   spec.license       = "MIT"
 
