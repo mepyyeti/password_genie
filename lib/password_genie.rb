@@ -95,6 +95,11 @@ module PasswordGenie
 			end
 			print "enter site: "
 			site = gets.chomp
+			while site.empty?
+				print "you must enter a site name: "
+				site = gets.chomp
+			end
+			
 			print "enter username: "
 			username = gets.chomp
 			if site == '' || username == ''
