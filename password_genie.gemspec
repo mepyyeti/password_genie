@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["mepyyeti"]
   spec.email         = ["rcabej@gmail.com"]
   
-  spec.summary       = %q{minor bug fixes and bundle migration. Can be run as executable.}
-  spec.description   = %q{a simple tool to build a password/pin number sqlite repository based on user defined parameters 2. archive passwords/pin numbers, usernames, and corresponding site data 3. and search data. requires sqlite3. minor big fixes and bundle migration. AS EXECUTABLE}
+  spec.summary       = %q{minor bug fixes and bundle migration. "exe" to "bin" modification.}
+  spec.description   = %q{a simple tool to build a password/pin number sqlite repository based on user defined parameters 2. archive passwords/pin numbers, usernames, and corresponding site data 3. and search data. requires sqlite3. minor big fixes and bundle migration.}
   spec.homepage      = "https://www.github.com/mepyyeti/password_genie"
   spec.license       = "MIT"
 
@@ -31,8 +31,8 @@ Gem::Specification.new do |spec|
   spec.files         = Dir.chdir(File.expand_path('..', __FILE__)) do
     `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   end
-  spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  #spec.bindir        = "exe"
+  spec.executables   = ["password_genie"]#spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 2.0"
