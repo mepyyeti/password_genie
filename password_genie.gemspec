@@ -36,7 +36,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency "bundler", "~> 2.0"
-  spec.add_development_dependency "rake", "~> 10.0", ">= 10.5.0"
+  spec.add_development_dependency "rake", ">= 10.5.0", "~> 13.0"
   spec.add_runtime_dependency "sqlite3", "~> 1.4.0", ">= 1.4.0"
   spec.post_install_message = "thx.  https://www.github.com/mepyyeti/password_genie"
 end
